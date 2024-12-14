@@ -181,7 +181,7 @@ def predict_maintenance_form(machine):
 
         # Define the feature names and divide them into rows
         # Define valid ranges for input features
-        feature_ranges = {
+        feature_names = {
             "Control Panel Temperature (°C)": (0, 65),
             "Spindle Motor Temperature (°C)": (0, 85),
             "Servo Motor Temperature (°C)": (0, 80),
