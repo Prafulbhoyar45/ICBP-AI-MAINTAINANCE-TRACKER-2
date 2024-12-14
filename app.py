@@ -175,25 +175,25 @@ def predict_maintenance_form(machine):
     if "prediction_result" not in st.session_state:
         st.session_state["prediction_result"] = ""
 
-    # Define valid ranges for each feature
+    # Define valid ranges for each feature with consistent float type
     feature_ranges = {
-        "Control Panel Temperature (°C)": (0, 65),
-        "Spindle Motor Temperature (°C)": (0, 85),
-        "Servo Motor Temperature (°C)": (0, 80),
-        "Coolant Temperature (°C)": (0, 50),
-        "Coolant Flow (L/min)": (0, 50),
-        "Coolant Level (%)": (0, 100),
-        "Tool Wear (%)": (0, 75),
-        "Spindle Speed (RPM)": (0, 9000),
-        "Feed Rate (mm/min)": (0, 4000),
-        "Vibration (mm/s)": (0, 0.8),
-        "Fan Speed (RPM)": (0, 2000),
-        "Power Consumption (kW)": (0, 25),
-        "Cycle Time (mins)": (0, 1440),
-        "Idle Time (mins)": (0, 1440),
-        "Axis Load (X, Y, Z)": (0, 85),
-        "Ambient Temperature (°C)": (0, 50),
-        "Hydraulic Pressure (bar)": (0, 60),
+        "Control Panel Temperature (°C)": (0.0, 65.0),
+        "Spindle Motor Temperature (°C)": (0.0, 85.0),
+        "Servo Motor Temperature (°C)": (0.0, 80.0),
+        "Coolant Temperature (°C)": (0.0, 50.0),
+        "Coolant Flow (L/min)": (0.0, 50.0),
+        "Coolant Level (%)": (0.0, 100.0),
+        "Tool Wear (%)": (0.0, 75.0),
+        "Spindle Speed (RPM)": (0.0, 9000.0),
+        "Feed Rate (mm/min)": (0.0, 4000.0),
+        "Vibration (mm/s)": (0.0, 0.8),
+        "Fan Speed (RPM)": (0.0, 2000.0),
+        "Power Consumption (kW)": (0.0, 25.0),
+        "Cycle Time (mins)": (0.0, 1440.0),
+        "Idle Time (mins)": (0.0, 1440.0),
+        "Axis Load (X, Y, Z)": (0.0, 85.0),
+        "Ambient Temperature (°C)": (0.0, 50.0),
+        "Hydraulic Pressure (bar)": (0.0, 60.0),
         "Tool Breakage (Yes/No)": ("No", "Yes"),
         "Status (Running/Stopped)": ("Stopped", "Running"),
     }
@@ -263,8 +263,6 @@ def predict_maintenance_form(machine):
 
     if error_message:
         st.error(error_message)
-
-
 
 
 if __name__ == "__main__":
