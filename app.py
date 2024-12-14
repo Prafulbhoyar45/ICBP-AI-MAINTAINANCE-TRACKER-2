@@ -175,56 +175,58 @@ def predict_maintenance_form(machine):
     if "prediction_result" not in st.session_state:
         st.session_state["prediction_result"] = ""
 
+    # Define valid ranges for each feature
+    feature_ranges = {
+        "Control Panel Temperature (°C)": (0, 65),
+        "Spindle Motor Temperature (°C)": (0, 85),
+        "Servo Motor Temperature (°C)": (0, 80),
+        "Coolant Temperature (°C)": (0, 50),
+        "Coolant Flow (L/min)": (0, 50),
+        "Coolant Level (%)": (0, 100),
+        "Tool Wear (%)": (0, 75),
+        "Spindle Speed (RPM)": (0, 9000),
+        "Feed Rate (mm/min)": (0, 4000),
+        "Vibration (mm/s)": (0, 0.8),
+        "Fan Speed (RPM)": (0, 2000),
+        "Power Consumption (kW)": (0, 25),
+        "Cycle Time (mins)": (0, 1440),
+        "Idle Time (mins)": (0, 1440),
+        "Axis Load (X, Y, Z)": (0, 85),
+        "Ambient Temperature (°C)": (0, 50),
+        "Hydraulic Pressure (bar)": (0, 60),
+        "Tool Breakage (Yes/No)": ("No", "Yes"),
+        "Status (Running/Stopped)": ("Stopped", "Running"),
+    }
+
     with st.form("input_form"):
-        # Define input fields
         inputs = {}
-
-        # Define the feature names and divide them into rows
-        # Define valid ranges for input features
-        feature_names = {
-            "Control Panel Temperature (°C)": (0, 65),
-            "Spindle Motor Temperature (°C)": (0, 85),
-            "Servo Motor Temperature (°C)": (0, 80),
-            "Coolant Temperature (°C)": (0, 50),
-            "Coolant Flow (L/min)": (0, 50),
-            "Coolant Level (%)": (0, 100),
-            "Tool Wear (%)": (0, 75),
-            "Spindle Speed (RPM)": (0, 9000),
-            "Feed Rate (mm/min)": (0, 4000),
-            "Vibration (mm/s)": (0, 0.8),
-            "Fan Speed (RPM)": (0, 2000),
-            "Power Consumption (kW)": (0, 25),
-            "Cycle Time (mins)": (0, 1440),
-            "Idle Time (mins)": (0, 1440),
-            "Axis Load (X, Y, Z)": (0, 85),
-            "Ambient Temperature (°C)": (0, 50),
-            "Hydraulic Pressure (bar)": (0, 60),
-            "Tool Breakage (Yes/No)": ("No", "Yes"),
-            "Status (Running/Stopped)": ("Stopped", "Running"),
-        }
-
+        error_message = ""
 
         # Arrange inputs in a grid format
         cols = st.columns(3)  # 3 columns for grid layout
-        for i, feature in enumerate(feature_names):
+        for i, (feature, limits) in enumerate(feature_ranges.items()):
             col = cols[i % 3]  # Distribute inputs across columns
-            if feature in ["Tool Breakage (Yes/No)", "Status (Running/Stopped)"]:
-                options = ["No", "Yes"] if "Tool Breakage" in feature else ["Stopped", "Running"]
-                inputs[feature] = col.selectbox(feature, options, index=0)
-            else:
-                inputs[feature] = col.text_input(feature, value="")  # Blank numerical inputs
+            if isinstance(limits[0], str):  # Handle categorical features
+                inputs[feature] = col.selectbox(feature, options=limits)
+            else:  # Handle numerical features
+                inputs[feature] = col.number_input(
+                    feature, min_value=limits[0], max_value=limits[1], value=None
+                )
 
         # Add a submit button
         submit_button = st.form_submit_button("Enter to submit")
 
         if submit_button:
-            # Check if all fields are filled
-            if all(value != "" for value in inputs.values()):
+            # Validate all inputs are filled
+            if any(value is None for value in inputs.values()):
+                error_message = "All fields are required. Please fill in all inputs."
+            else:
                 # Prepare input DataFrame
-                input_df = pd.DataFrame([{
-                    k: (1 if v.lower() == "yes" or v.lower() == "running" else 0) if isinstance(v, str) else float(v)
-                    for k, v in inputs.items()
-                }])
+                input_df = pd.DataFrame([inputs])
+
+                # Map categorical values to numerical
+                input_df["Tool Breakage (Yes/No)"] = input_df["Tool Breakage (Yes/No)"].map({"No": 0, "Yes": 1})
+                input_df["Status (Running/Stopped)"] = input_df["Status (Running/Stopped)"].map({"Stopped": 0, "Running": 1})
 
                 # Align input DataFrame with model's expected features
                 model = cnc_models[machine]
@@ -242,30 +244,25 @@ def predict_maintenance_form(machine):
                 prediction = model.predict(input_df)[0]
 
                 # Update session state with the prediction result
-                st.session_state["prediction_result"] = f"{machine} Requires Maintenance" if prediction == 1 else f"{machine} Requires no Maintenance"
-            else:
-                st.error("All inputs are mandatory. Please fill in all fields.")
+                st.session_state["prediction_result"] = (
+                    f"{machine} Requires Maintenance" if prediction == 1 else f"{machine} Requires no Maintenance"
+                )
 
     # Display the prediction result below the form
     if st.session_state["prediction_result"]:
-        is_maintenance_required = "Requires Maintenance" in st.session_state["prediction_result"]
-        result_color = "#FF3131" if is_maintenance_required else "#50C878"
+        result_color = "red" if "Requires Maintenance" in st.session_state["prediction_result"] else "green"
 
         st.markdown(
             f"""
-            <div style="background-color: {result_color}; 
-                        color: white; 
-                        border-radius: 10px; 
-                        padding: 15px; 
-                        text-align: center; 
-                        font-size: 18px; 
-                        font-family: 'Roboto', sans-serif;
-                        font-weight: bold;">
-                {st.session_state['prediction_result']}
+            <div style="background-color: white; border: 2px solid {result_color}; padding: 10px; border-radius: 10px; color: {result_color}; text-align: center; font-weight: bold; font-size: 20px;">
+                Prediction Result: {st.session_state['prediction_result']}
             </div>
             """,
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
+
+    if error_message:
+        st.error(error_message)
 
 
 
