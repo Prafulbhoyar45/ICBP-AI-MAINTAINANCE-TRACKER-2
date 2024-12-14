@@ -180,6 +180,7 @@ def predict_maintenance_form(machine):
         inputs = {}
 
         # Define the feature names and divide them into rows
+        # Define valid ranges for input features
         feature_ranges = {
             "Control Panel Temperature (°C)": (0, 65),
             "Spindle Motor Temperature (°C)": (0, 85),
@@ -200,7 +201,8 @@ def predict_maintenance_form(machine):
             "Hydraulic Pressure (bar)": (0, 60),
             "Tool Breakage (Yes/No)": ("No", "Yes"),
             "Status (Running/Stopped)": ("Stopped", "Running"),
-}
+        }
+
 
         # Arrange inputs in a grid format
         cols = st.columns(3)  # 3 columns for grid layout
