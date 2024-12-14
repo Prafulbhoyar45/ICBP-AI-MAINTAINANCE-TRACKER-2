@@ -180,27 +180,27 @@ def predict_maintenance_form(machine):
         inputs = {}
 
         # Define the feature names and divide them into rows
-        feature_names = [ 
-            r"Control Panel Temperature (°C)": (0, 65),
-            r"Spindle Motor Temperature (°C)": (0, 85),
-            r"Servo Motor Temperature (°C)": (0, 80),
-            r"Coolant Temperature (°C)": (0, 50),
-            r"Coolant Flow (L/min)": (0, 50),
-            r"Coolant Level (%)": (0, 100),
-            r"Tool Wear (%)": (0, 75),
-            r"Spindle Speed (RPM)": (0, 9000),
-            r"Feed Rate (mm/min)": (0, 4000),
-            r"Vibration (mm/s)": (0, 0.8),
-            r"Fan Speed (RPM)": (0, 2000),
-            r"Power Consumption (kW)": (0, 25),
-            r"Cycle Time (mins)": (0, 1440),
-            r"Idle Time (mins)": (0, 1440),
-            r"Axis Load (X, Y, Z)": (0, 85),
-            r"Ambient Temperature (°C)": (0, 50),
-            r"Hydraulic Pressure (bar)": (0, 60),
-            r"Tool Breakage (Yes/No)": ("No", "Yes"),
-            r"Status (Running/Stopped)": ("Stopped", "Running"),
-        ]
+feature_ranges = {
+    "Control Panel Temperature (°C)": (0, 65),
+    "Spindle Motor Temperature (°C)": (0, 85),
+    "Servo Motor Temperature (°C)": (0, 80),
+    "Coolant Temperature (°C)": (0, 50),
+    "Coolant Flow (L/min)": (0, 50),
+    "Coolant Level (%)": (0, 100),
+    "Tool Wear (%)": (0, 75),
+    "Spindle Speed (RPM)": (0, 9000),
+    "Feed Rate (mm/min)": (0, 4000),
+    "Vibration (mm/s)": (0, 0.8),
+    "Fan Speed (RPM)": (0, 2000),
+    "Power Consumption (kW)": (0, 25),
+    "Cycle Time (mins)": (0, 1440),
+    "Idle Time (mins)": (0, 1440),
+    "Axis Load (X, Y, Z)": (0, 85),
+    "Ambient Temperature (°C)": (0, 50),
+    "Hydraulic Pressure (bar)": (0, 60),
+    "Tool Breakage (Yes/No)": ("No", "Yes"),
+    "Status (Running/Stopped)": ("Stopped", "Running"),
+}
 
         # Arrange inputs in a grid format
         cols = st.columns(3)  # 3 columns for grid layout
