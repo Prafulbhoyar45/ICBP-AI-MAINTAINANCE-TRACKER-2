@@ -180,8 +180,8 @@ def predict_maintenance_form(machine):
         inputs = {}
 
         # Define the feature names and divide them into rows
-        feature_names = [
-           "Control Panel Temperature (\u00b0C)": (0, 65),
+        feature_names = [ 
+            "Control Panel Temperature (\u00b0C)": (0, 65),
             "Spindle Motor Temperature (\u00b0C)": (0, 85),
             "Servo Motor Temperature (\u00b0C)": (0, 80),
             "Coolant Temperature (\u00b0C)": (0, 50),
