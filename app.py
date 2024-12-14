@@ -216,9 +216,13 @@ def predict_maintenance_form(machine):
         submit_button = st.form_submit_button("Enter to submit")
 
         if submit_button:
-            # Check if all fields are filled
-            if all(value != "" for value in inputs.values()):
-                # Prepare input DataFrame
+            # Validate all fields
+            if not all(inputs.values()):
+                st.error("All inputs are mandatory. Please fill in all fields.")
+                return
+
+            # Convert inputs into a DataFrame
+            try:
                 input_df = pd.DataFrame([{
                     k: (1 if v.lower() == "yes" or v.lower() == "running" else 0) if isinstance(v, str) else float(v)
                     for k, v in inputs.items()
@@ -228,6 +232,10 @@ def predict_maintenance_form(machine):
                 model = cnc_models[machine]
                 expected_features = model.feature_names_in_
 
+                # Debugging: Log expected features and input columns
+                print(f"Expected features: {expected_features}")
+                print(f"Input columns: {input_df.columns}")
+
                 # Add missing columns with default values (0)
                 for feature in expected_features:
                     if feature not in input_df.columns:
@@ -236,18 +244,26 @@ def predict_maintenance_form(machine):
                 # Reorder columns to match the model
                 input_df = input_df[expected_features]
 
+                # Ensure no missing values
+                input_df.fillna(0, inplace=True)
+
+                # Debugging: Log final input DataFrame
+                print(f"Final input DataFrame: {input_df}")
+
                 # Make the prediction
                 prediction = model.predict(input_df)[0]
 
                 # Update session state with the prediction result
                 st.session_state["prediction_result"] = f"{machine} Requires Maintenance" if prediction == 1 else f"{machine} Requires no Maintenance"
-            else:
-                st.error("All inputs are mandatory. Please fill in all fields.")
+
+            except Exception as e:
+                st.error(f"An error occurred during prediction: {e}")
+                print(e)
 
     # Display the prediction result below the form
     if st.session_state["prediction_result"]:
         is_maintenance_required = "Requires Maintenance" in st.session_state["prediction_result"]
-        result_color = "#FF3131" if is_maintenance_required else "#50C878"
+        result_color = "red" if is_maintenance_required else "green"
 
         st.markdown(
             f"""
