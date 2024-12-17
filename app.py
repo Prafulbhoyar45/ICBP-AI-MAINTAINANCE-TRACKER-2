@@ -186,7 +186,7 @@ def predict_maintenance_form(machine):
         "Tool Wear (%)": (0.0, 75.0),
         "Spindle Speed (RPM)": (0.0, 9000.0),
         "Feed Rate (mm/min)": (0.0, 4000.0),
-        "Vibration (mm/s)": (0.0, 0.8),
+        "Vibration (mm/s)": (0.0, 2.0),
         "Fan Speed (RPM)": (0.0, 2000.0),
         "Power Consumption (kW)": (0.0, 25.0),
         "Cycle Time (mins)": (0.0, 1440.0),
