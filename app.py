@@ -72,7 +72,7 @@ def main():
     # Sidebar setup
     st.sidebar.image("mentor_cir.png", caption="Usha Mary", width=170)
     st.sidebar.image("my_image_cir.png", caption="Praful Bhoyar", width=170)
-    st.sidebar.image("red_suit_cir.png", caption="Parth Dave", width=170)
+    st.sidebar.image("Red_suit_cir.png", caption="Parth Dave", width=170)
 
     # Header layout with logos
     header = st.columns([1, 4, 1])
