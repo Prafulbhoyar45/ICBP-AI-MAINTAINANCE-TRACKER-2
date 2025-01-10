@@ -81,7 +81,7 @@ def main():
     with header[1]:
         st.markdown("<div class='stTitle'>AI Maintenance Tracker</div>", unsafe_allow_html=True)
     with header[2]:
-        st.image("Edunet-Foundation-logo.png", use_container_width=True)  # Right logo
+        st.image("Final Technetic logo CTC.png", use_container_width=True)  # Right logo
 
     # Title and department image
     st.markdown("<div class='stHeader'><b>Transmission & Machining Department Overview</b></div>", unsafe_allow_html=True)
